@@ -87,7 +87,7 @@ header { visibility: hidden; }
     font-size: 0.95rem; font-weight: 900; letter-spacing: 2px;
     color: #00FF88; text-transform: uppercase;
 }
-.brand-sub { font-size: 0.65rem; color: #3D4A5C; letter-spacing: 3px; margin-top: 1px; }
+.brand-sub { font-size: 0.65rem; color: #FFFFFF; letter-spacing: 3px; margin-top: 1px; }
 .live-dot {
     display: inline-block; width: 7px; height: 7px;
     background: #00FF88; border-radius: 50%;
@@ -113,7 +113,7 @@ header { visibility: hidden; }
 }
 .price-change-up   { font-family: 'JetBrains Mono', monospace; color: #00FF88; font-weight: 600; font-size: 1rem; }
 .price-change-down { font-family: 'JetBrains Mono', monospace; color: #FF3366; font-weight: 600; font-size: 1rem; }
-.ticker-label { font-size: 0.65rem; color: #3D4A5C; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+.ticker-label { font-size: 0.65rem; color: #FFFFFF; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
 
 /* ── AI Signal ── */
 .ai-signal-box {
@@ -147,7 +147,7 @@ header { visibility: hidden; }
     border: 1px solid #1E232D;
     border-radius: 8px; padding: 10px 12px; text-align: center;
 }
-.mpill .lbl { font-size: 0.58rem; color: #3D4A5C; text-transform: uppercase; letter-spacing: 1.5px; }
+.mpill .lbl { font-size: 0.58rem; color: #FFFFFF; text-transform: uppercase; letter-spacing: 1.5px; }
 .mpill .val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; margin-top: 3px; }
 .mpill .sub { font-size: 0.6rem; color: #3D4A5C; margin-top: 2px; }
 
@@ -490,7 +490,7 @@ with tab_main:
         fc1_pct = (forecast_prices[0]-last_close)/last_close*100
         st.markdown(f"""
         <div class="ai-signal-box" style="height:136px;">
-          <div style="font-size:0.55rem;color:#3D4A5C;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">
+          <div style="font-size:0.55rem;color:#FFFFFF;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">
             {MODEL_NAME} · Señal IA 10 días
           </div>
           <div class="{sig_cls}">{sig_txt}</div>
@@ -728,19 +728,19 @@ with tab_main:
                    font-weight:700;color:#00FF88;">{rel}%</div>
             </div>
           </div>
-          <div style="font-size:0.6rem;color:#3D4A5C;letter-spacing:2px;text-transform:uppercase;">
+          <div style="font-size:0.6rem;color:#FFFFFF;letter-spacing:2px;text-transform:uppercase;">
             Fiabilidad del Modelo
           </div>
           <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
             <div style="background:#080B0F;border:1px solid #1E232D;border-radius:6px;
                  padding:6px;text-align:center;">
-              <div style="font-size:0.55rem;color:#3D4A5C;letter-spacing:1px;">R²</div>
+              <div style="font-size:0.55rem;color:#FFFFFF;letter-spacing:1px;">R²</div>
               <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;
                    font-weight:700;color:#00D4FF;">{MODEL_R2}</div>
             </div>
             <div style="background:#080B0F;border:1px solid #1E232D;border-radius:6px;
                  padding:6px;text-align:center;">
-              <div style="font-size:0.55rem;color:#3D4A5C;letter-spacing:1px;">MAPE</div>
+              <div style="font-size:0.55rem;color:#FFFFFF;letter-spacing:1px;">MAPE</div>
               <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;
                    font-weight:700;color:#FFB800;">{MODEL_MAPE}%</div>
             </div>
@@ -754,7 +754,7 @@ with tab_main:
         asks = [(live_last+i*11+np.random.uniform(0,4), int(np.random.uniform(60,700))) for i in range(5)]
         bids = [(live_last-i*11-np.random.uniform(0,4), int(np.random.uniform(60,700))) for i in range(5)]
         ob = '<div class="card-sm">'
-        ob += '<div style="display:flex;justify-content:space-between;font-size:0.58rem;color:#3D4A5C;padding-bottom:5px;border-bottom:1px solid #1E232D;font-family:JetBrains Mono,monospace;">'\
+        ob += '<div style="display:flex;justify-content:space-between;font-size:0.58rem;color:#FFFFFF;padding-bottom:5px;border-bottom:1px solid #1E232D;font-family:JetBrains Mono,monospace;">'\
               '<span>Venta</span><span>Compra</span><span>Vol</span></div>'
         for (ap,av),(bp,bv) in zip(reversed(asks), bids):
             ba=min(100,int(av/7)); bb=min(100,int(bv/7))
@@ -776,7 +776,7 @@ with tab_main:
         sig_lbl = "COMPRAR" if ai_up else "VENDER"
         st.markdown(f"""
         <div class="card-sm">
-          <div style="font-size:0.62rem;color:#3D4A5C;margin-bottom:8px;">
+          <div style="font-size:0.62rem;color:#FFFFFF;margin-bottom:8px;">
             Señal IA: <b style="color:{'#00FF88' if ai_up else '#FF3366'};">{sig_lbl}</b>
             · Conf. {ai_conf}%
           </div>
@@ -888,7 +888,7 @@ with tab_main:
               <div class="sub">R²={MODEL_R2}</div>
             </div>
           </div>
-          <div style="display:flex;gap:4px;font-size:0.58rem;color:#3D4A5C;
+          <div style="display:flex;gap:4px;font-size:0.58rem;color:#FFFFFF;
                text-transform:uppercase;letter-spacing:1px;padding-bottom:5px;
                border-bottom:1px solid #1E232D;font-family:JetBrains Mono,monospace;">
             <span style="width:55px;">Fecha</span>
@@ -1007,7 +1007,7 @@ with tab_main:
 
         # Detailed table
         tbl = '<div class="card-sm" style="margin-top:6px;">'
-        tbl += '<div class="fc-row" style="font-size:0.56rem;color:#3D4A5C;'\
+        tbl += '<div class="fc-row" style="font-size:0.56rem;color:#FFFFFF;'\
                'text-transform:uppercase;letter-spacing:1px;padding-bottom:6px;'\
                'border-bottom:1px solid #1E232D;">'
         tbl += '<span>Fecha</span><span>Forecast</span><span>Real</span>'\
