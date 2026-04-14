@@ -225,6 +225,11 @@ header { visibility: hidden; }
 .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p {
     color: #00FF88 !important;
 }
+
+/* ── Streamlit Form Labels ── */
+[data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
