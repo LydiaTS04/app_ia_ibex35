@@ -1142,7 +1142,7 @@ with st.container():
         fig_gauge.update_layout(
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            height=220, margin=dict(l=10, r=10, t=30, b=10),
+            height=250, margin=dict(l=10, r=10, t=50, b=10),
             font=dict(family='Inter', color='#C9D1D9')
         )
         st.plotly_chart(fig_gauge, use_container_width=True)
