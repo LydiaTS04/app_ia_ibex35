@@ -209,6 +209,22 @@ header { visibility: hidden; }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #080B0F; }
 ::-webkit-scrollbar-thumb { background: #1E232D; border-radius: 2px; }
+
+/* ── Streamlit Tabs ── */
+.stTabs [data-baseweb="tab-list"] button {
+    color: #FFFFFF !important;
+}
+.stTabs [data-baseweb="tab-list"] button p {
+    color: #FFFFFF !important;
+    font-weight: 600;
+}
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    color: #00FF88 !important;
+    border-bottom-color: #00FF88 !important;
+}
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p {
+    color: #00FF88 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
