@@ -1049,23 +1049,6 @@ with c_fc:
 
 
 # ══════════════════════════════════════════════════════════════
-# INFORMACIÓN DEL MODELO Y DEL IBEX
-# ══════════════════════════════════════════════════════════════
-st.markdown("""
-<div class='card' style='margin-top:20px;'>
-    <h2 style='color:#00FF88;'>¿Qué es el IBEX 35?</h2>
-    <p style='color:#C9D1D9;'>El <b>IBEX 35</b> es el principal índice bursátil de referencia de la bolsa española elaborado por Bolsas y Mercados Españoles (BME). Está formado por las 35 empresas con más liquidez que cotizan en el Sistema de Interconexión Bursátil Español (SIBE) en las cuatro bolsas españolas (Madrid, Barcelona, Bilbao y Valencia).</p>
-    <h2 style='color:#00D4FF; margin-top:20px;'>Características del Modelo de Inteligencia Artificial</h2>
-    <p style='color:#C9D1D9;'>Este panel utiliza un modelo de aprendizaje profundo <strong>GRU Ultra</strong> (Gated Recurrent Unit) para predecir los movimientos del IBEX 35 basándose en el análisis de los últimos 120 días de histórico de cotización.
-    <br><br>Se utilizan más de 17 variables técnicas y algorítmicas combinadas con 5 capas de procesamiento neuronal residual y <i>Multi-Head Attention</i>, aportando un intervalo de confianza y estimaciones direccionales de gran precisión (Histórico R² > 0.99).</p>
-    <h3 style='color:#00FF88; margin-top:20px;'>GRU frente a LSTM y RNN Clásicas</h3>
-    <p style='color:#C9D1D9;'>A diferencia de las Redes Neuronales Recurrentes (RNN) tradicionales, que sufren graves problemas de olvido de información histórica a largo plazo, la <b>GRU</b> incorpora <i>puertas de actualización y reinicio (update & reset gates)</i> para decidir proactivamente qué contexto del pasado debe retenenerse o descartarse.<br><br>
-    En comparación con las redes <b>LSTM</b> (Long Short-Term Memory), la arquitectura GRU tiene un diseño más optimizado y usa menos parámetros matemáticos ocultos. En aplicaciones financieras cargadas de varianza y ruido aleatorio como el IBEX 35, esta menor complejidad es tu mayor aliada: previene eficientemente el sobreajuste (overfitting) que las pesadas LSTM terminan sufriendo. Además, su simplicidad permite una optimización de sus pesos con mayor rapidez y en los tests de alta frecuencia captura quiebros tendenciales con mayor reactividad a corto plazo.</p>
-</div>
-""", unsafe_allow_html=True)
-
-
-# ══════════════════════════════════════════════════════════════
 # HERRAMIENTAS BROKER: GESTIÓN DE RIESGO
 # ══════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-label" style="margin-top:10px;">⚖️ Gestión de Riesgo · Simulador de Posición</div>', unsafe_allow_html=True)
@@ -1093,3 +1076,86 @@ with st.container():
     else:
         st.warning('Ajusta los valores de Entrada y Stop Loss.')
     st.markdown('</div>', unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
+# TERMÓMETRO TÉCNICO Y SENTIMIENTO
+# ══════════════════════════════════════════════════════════════
+st.markdown('<div class="sec-label" style="margin-top:20px;">🧭 Termómetro Técnico · Fuerza del Mercado (Live)</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    if not live_df.empty:
+        chg_diff = live_df['Close'].diff()
+        gain = chg_diff.clip(lower=0).rolling(14).mean()
+        loss_ = (-chg_diff.clip(upper=0)).rolling(14).mean()
+        rsi_series = 100 - (100 / (1 + gain / (loss_ + 1e-9)))
+        live_rsi = rsi_series.iloc[-1] if not pd.isna(rsi_series.iloc[-1]) else 50.0
+        ema12 = live_df['Close'].ewm(span=12, adjust=False).mean()
+        ema26 = live_df['Close'].ewm(span=26, adjust=False).mean()
+        macd_series = ema12 - ema26
+        macd_sig = macd_series.ewm(span=9, adjust=False).mean()
+        macd_hist = macd_series - macd_sig
+        live_macd_h = macd_hist.iloc[-1] if not pd.isna(macd_hist.iloc[-1]) else 0.0
+        max_macd = max(0.1, macd_hist.abs().max())
+        fig_gauge = go.Figure()
+        fig_gauge.add_trace(go.Indicator(
+            mode = "gauge+number",
+            value = live_rsi,
+            title = {'text': "RSI (14) - Sobrecompra/Venta", 'font': {'size': 12, 'color': '#6B7A8F', 'family':'Inter'}},
+            number = {'font': {'color': '#00FF88' if live_rsi<30 else ('#FF3366' if live_rsi>70 else '#00D4FF'), 'size':36}},
+            gauge = {
+                'axis': {'range': [None, 100], 'tickcolor': "#3D4A5C"},
+                'bar': {'color': '#00D4FF'},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 1,
+                'bordercolor': "#1E232D",
+                'steps': [
+                    {'range': [0, 30], 'color': "rgba(0,255,136,0.15)"},
+                    {'range': [30, 70], 'color': "rgba(30,35,45,0.4)"},
+                    {'range': [70, 100], 'color': "rgba(255,51,102,0.15)"}],
+                'threshold': {
+                    'line': {'color': "#C9D1D9", 'width': 3},
+                    'thickness': 0.75,
+                    'value': live_rsi}
+            },
+            domain = {'x': [0, 0.45], 'y': [0, 1]}
+        ))
+        fig_gauge.add_trace(go.Indicator(
+            mode = "gauge+number+delta",
+            value = live_macd_h,
+            title = {'text': "MACD Histograma (Fuerza)", 'font': {'size': 12, 'color': '#6B7A8F', 'family':'Inter'}},
+            delta = {'reference': 0, 'increasing': {'color': '#00FF88'}, 'decreasing': {'color': '#FF3366'}},
+            number = {'font': {'color': '#00FF88' if live_macd_h>=0 else '#FF3366', 'size':36}},
+            gauge = {
+                'axis': {'range': [-max_macd, max_macd], 'tickcolor': "#3D4A5C"},
+                'bar': {'color': '#00FF88' if live_macd_h >=0 else '#FF3366'},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 1,
+                'bordercolor': "#1E232D"
+            },
+            domain = {'x': [0.55, 1], 'y': [0, 1]}
+        ))
+        fig_gauge.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            height=220, margin=dict(l=10, r=10, t=30, b=10),
+            font=dict(family='Inter', color='#C9D1D9')
+        )
+        st.plotly_chart(fig_gauge, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════
+# INFORMACIÓN DEL MODELO Y DEL IBEX
+# ══════════════════════════════════════════════════════════════
+st.markdown("""
+<div class='card' style='margin-top:20px;'>
+    <h2 style='color:#00FF88;'>¿Qué es el IBEX 35?</h2>
+    <p style='color:#C9D1D9;'>El <b>IBEX 35</b> es el principal índice bursátil de referencia de la bolsa española elaborado por Bolsas y Mercados Españoles (BME). Está formado por las 35 empresas con más liquidez que cotizan en el Sistema de Interconexión Bursátil Español (SIBE) en las cuatro bolsas españolas (Madrid, Barcelona, Bilbao y Valencia).</p>
+    <h2 style='color:#00D4FF; margin-top:20px;'>Características del Modelo de Inteligencia Artificial</h2>
+    <p style='color:#C9D1D9;'>Este panel utiliza un modelo de aprendizaje profundo <strong>GRU Ultra</strong> (Gated Recurrent Unit) para predecir los movimientos del IBEX 35 basándose en el análisis de los últimos 120 días de histórico de cotización.
+    <br><br>Se utilizan más de 17 variables técnicas y algorítmicas combinadas con 5 capas de procesamiento neuronal residual y <i>Multi-Head Attention</i>, aportando un intervalo de confianza y estimaciones direccionales de gran precisión (Histórico R² > 0.99).</p>
+    <h3 style='color:#00FF88; margin-top:20px;'>GRU frente a LSTM y RNN Clásicas</h3>
+    <p style='color:#C9D1D9;'>A diferencia de las Redes Neuronales Recurrentes (RNN) tradicionales, que sufren graves problemas de olvido de información histórica a largo plazo, la <b>GRU</b> incorpora <i>puertas de actualización y reinicio (update & reset gates)</i> para decidir proactivamente qué contexto del pasado debe retenenerse o descartarse.<br><br>
+    En comparación con las redes <b>LSTM</b> (Long Short-Term Memory), la arquitectura GRU tiene un diseño más optimizado y usa menos parámetros matemáticos ocultos. En aplicaciones financieras cargadas de varianza y ruido aleatorio como el IBEX 35, esta menor complejidad es tu mayor aliada: previene eficientemente el sobreajuste (overfitting) que las pesadas LSTM terminan sufriendo. Además, su simplicidad permite una optimización de sus pesos con mayor rapidez y en los tests de alta frecuencia captura quiebros tendenciales con mayor reactividad a corto plazo.</p>
+</div>
+""", unsafe_allow_html=True)
+
+
