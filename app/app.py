@@ -153,7 +153,7 @@ header { visibility: hidden; }
 
 /* ── Section label ── */
 .sec-label {
-    font-size: 0.58rem; font-weight: 700; color: #3D4A5C;
+    font-size: 0.58rem; font-weight: 700; color: #FFFFFF;
     text-transform: uppercase; letter-spacing: 3px; margin: 14px 0 8px 0;
 }
 
@@ -446,7 +446,7 @@ st.markdown(f"""
   <div style="display:flex;align-items:center;gap:14px;">
     <span class="badge-live"><span class="live-dot"></span>LIVE</span>
     <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#3D4A5C;">
-      {datetime.now().strftime('%d %b %Y  %H:%M:%S')}
+      {pd.Timestamp.now(tz='Europe/Madrid').strftime('%d %b %Y  %H:%M:%S')}
     </span>
   </div>
 </div>
@@ -1041,6 +1041,9 @@ with tab_info:
         <h2 style='color:#00D4FF; margin-top:20px;'>Características del Modelo de Inteligencia Artificial</h2>
         <p style='color:#C9D1D9;'>Este panel utiliza un modelo de aprendizaje profundo <strong>GRU Ultra</strong> (Gated Recurrent Unit) para predecir los movimientos del IBEX 35 basándose en el análisis de los últimos 120 días de histórico de cotización.
         <br><br>Se utilizan más de 17 variables técnicas y algorítmicas combinadas con 5 capas de procesamiento neuronal residual y <i>Multi-Head Attention</i>, aportando un intervalo de confianza y estimaciones direccionales de gran precisión (Histórico R² > 0.99).</p>
+        <h3 style='color:#00FF88; margin-top:20px;'>GRU frente a LSTM y RNN Clásicas</h3>
+        <p style='color:#C9D1D9;'>A diferencia de las Redes Neuronales Recurrentes (RNN) tradicionales, que sufren graves problemas de olvido de información histórica a largo plazo, la <b>GRU</b> incorpora <i>puertas de actualización y reinicio (update & reset gates)</i> para decidir proactivamente qué contexto del pasado debe retenenerse o descartarse.<br><br>
+        En comparación con las redes <b>LSTM</b> (Long Short-Term Memory), la arquitectura GRU tiene un diseño más optimizado y usa menos parámetros matemáticos ocultos. En aplicaciones financieras cargadas de varianza y ruido aleatorio como el IBEX 35, esta menor complejidad es tu mayor aliada: previene eficientemente el sobreajuste (overfitting) que las pesadas LSTM terminan sufriendo. Además, su simplicidad permite una optimización de sus pesos con mayor rapidez y en los tests de alta frecuencia captura quiebros tendenciales con mayor reactividad a corto plazo.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1068,10 +1071,18 @@ with tab_news:
                 pubDate = item.find('pubDate')
                 pubDate_text = pubDate.text if pubDate is not None else ""
                 
-                # Formatear la fecha si existe (limpiar el GMT timezone que devuelve el RSS)
+                # Formatear la fecha y pasarla a hora de Madrid
                 if pubDate_text:
-                    if pubDate_text.endswith(" GMT"):
-                        pubDate_text = pubDate_text[:-4]
+                    try:
+                        # Convertimos a objeto datetime indicando UTC y localizamos en Madrid
+                        dt = pd.to_datetime(pubDate_text)
+                        if dt.tz is None:
+                            dt = dt.tz_localize('UTC')
+                        dt_madrid = dt.tz_convert('Europe/Madrid')
+                        pubDate_text = dt_madrid.strftime('%d %b %Y %H:%M')
+                    except Exception:
+                        if "GMT" in pubDate_text:
+                            pubDate_text = pubDate_text.replace(" GMT", "")
                 
                 st.markdown(f"""
                 <div class="card-sm" style="margin-bottom:10px;">
