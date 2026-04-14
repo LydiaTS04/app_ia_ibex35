@@ -456,7 +456,7 @@ st.markdown(f"""
 # ══════════════════════════════════════════════════════════════
 # TABS
 # ══════════════════════════════════════════════════════════════
-tab_main, tab_info = st.tabs(['📈 Principal', 'ℹ️ Información sobre el IBEX'])
+tab_main, tab_info, tab_news = st.tabs(['📈 Principal', 'ℹ️ Información sobre el IBEX', '📰 Noticias'])
 
 with tab_main:
     # ROW 1 — Price + AI Signal + Metrics
@@ -1043,3 +1043,42 @@ with tab_info:
         <br><br>Se utilizan más de 17 variables técnicas y algorítmicas combinadas con 5 capas de procesamiento neuronal residual y <i>Multi-Head Attention</i>, aportando un intervalo de confianza y estimaciones direccionales de gran precisión (Histórico R² > 0.99).</p>
     </div>
     """, unsafe_allow_html=True)
+
+with tab_news:
+    st.markdown("<div class='sec-label'>📰 Últimas noticias del IBEX 35</div>", unsafe_allow_html=True)
+    try:
+        import urllib.request
+        import xml.etree.ElementTree as ET
+        
+        req = urllib.request.Request('https://news.google.com/rss/search?q=IBEX+35+when:7d&hl=es&gl=ES&ceid=ES:es', headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            xml_data = response.read()
+            
+        root = ET.fromstring(xml_data)
+        items = root.findall('./channel/item')
+        
+        if not items:
+            st.info("No se han encontrado noticias recientes.")
+        else:
+            for item in items[:10]:  # Mostrar las top 10
+                title = item.find('title')
+                title_text = title.text if title is not None else "Sin título"
+                link = item.find('link')
+                link_text = link.text if link is not None else "#"
+                pubDate = item.find('pubDate')
+                pubDate_text = pubDate.text if pubDate is not None else ""
+                
+                # Formatear la fecha si existe (limpiar el GMT timezone que devuelve el RSS)
+                if pubDate_text:
+                    if pubDate_text.endswith(" GMT"):
+                        pubDate_text = pubDate_text[:-4]
+                
+                st.markdown(f"""
+                <div class="card-sm" style="margin-bottom:10px;">
+                    <a href="{link_text}" target="_blank" style="color:#00D4FF; text-decoration:none; font-weight:600; font-size:1.05rem;">{title_text}</a>
+                    <div style="color:#6B7A8F; font-size:0.75rem; margin-top:5px; font-family:'JetBrains Mono',monospace;">📅 {pubDate_text}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+    except Exception as e:
+        st.error(f"Error al cargar las noticias: {str(e)}")
