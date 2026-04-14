@@ -149,7 +149,7 @@ header { visibility: hidden; }
 }
 .mpill .lbl { font-size: 0.58rem; color: #FFFFFF; text-transform: uppercase; letter-spacing: 1.5px; }
 .mpill .val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; margin-top: 3px; }
-.mpill .sub { font-size: 0.6rem; color: #3D4A5C; margin-top: 2px; }
+.mpill .sub { font-size: 0.6rem; color: #FFFFFF; margin-top: 2px; }
 
 /* ── Section label ── */
 .sec-label {
@@ -163,7 +163,7 @@ header { visibility: hidden; }
     padding: 7px 0; border-bottom: 1px solid #1E232D;
     font-family: 'JetBrains Mono', monospace;
 }
-.audit-date { font-size: 0.72rem; color: #3D4A5C; width: 55px; flex-shrink:0; }
+.audit-date { font-size: 0.72rem; color: #FFFFFF; width: 55px; flex-shrink:0; }
 .audit-pred { font-size: 0.82rem; color: #C9D1D9; width: 68px; font-weight: 600; }
 .audit-real { font-size: 0.82rem; color: #00D4FF; width: 68px; font-weight: 600; }
 .audit-good { color: #00FF88; font-size: 0.72rem; }
@@ -461,7 +461,7 @@ st.markdown(f"""
   </div>
   <div style="display:flex;align-items:center;gap:14px;">
     <span class="badge-live"><span class="live-dot"></span>LIVE</span>
-    <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#3D4A5C;">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#FFFFFF;">
       {pd.Timestamp.now(tz='Europe/Madrid').strftime('%d %b %Y  %H:%M:%S')}
     </span>
   </div>
@@ -488,7 +488,7 @@ with c_price:
       <div class="{chg_cls}" style="margin-top:4px;">
         {arrow} {abs(live_chg):,.2f} &nbsp;({arrow}{abs(live_pct):.2f}%)
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#3D4A5C;margin-top:6px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#FFFFFF;margin-top:6px;">
         A:<b style="color:#8B9EB7">{live_open:,.0f}</b>&nbsp;&nbsp;
         H:<b style="color:#00FF88">{live_high:,.0f}</b>&nbsp;&nbsp;
         L:<b style="color:#FF3366">{live_low:,.0f}</b>&nbsp;&nbsp;
@@ -508,7 +508,7 @@ with c_ai:
         {MODEL_NAME} · Señal IA 10 días
       </div>
       <div class="{sig_cls}">{sig_txt}</div>
-      <div style="font-size:0.65rem;color:#3D4A5C;margin-top:2px;">
+      <div style="font-size:0.65rem;color:#FFFFFF;margin-top:2px;">
         Objetivo D+1: <span style="font-family:'JetBrains Mono',monospace;color:#C9D1D9;">
         {forecast_prices[0]:,.0f}</span>
         &nbsp;<span style="color:{bar_col};">({'+' if fc1_pct>0 else ''}{fc1_pct:.2f}%)</span>
@@ -517,7 +517,7 @@ with c_ai:
         <div class="confidence-fill" style="width:{ai_conf}%;background:{bar_col};
              box-shadow:0 0 8px {bar_col}88;"></div>
       </div>
-      <div style="font-size:0.62rem;color:#3D4A5C;">
+      <div style="font-size:0.62rem;color:#FFFFFF;">
         Confianza del modelo: <b style="color:{bar_col};">{ai_conf}%</b>
         &nbsp;·&nbsp; RMSE histórico: <b style="color:#8B9EB7;">{MODEL_RMSE} pts</b>
       </div>
@@ -689,16 +689,16 @@ with c_chart:
     GRID = 'rgba(30,35,45,0.8)'
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='Inter', color='#3D4A5C', size=9),
+        font=dict(family='Inter', color='#FFFFFF', size=9),
         legend=dict(bgcolor='rgba(0,0,0,0)', borderwidth=0,
                     orientation='h', y=1.04, x=0,
-                    font=dict(size=9, color='#6B7A8F')),
-        xaxis=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#3D4A5C'),
+                    font=dict(size=9, color='#FFFFFF')),
+        xaxis=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#FFFFFF'),
                    rangeslider=dict(visible=False),
                    rangeselector=dict(
                        bgcolor='#0F1218', activecolor='rgba(0,212,255,0.15)',
                        bordercolor='#1E232D', borderwidth=1,
-                       font=dict(color='#6B7A8F', size=9),
+                       font=dict(color='#FFFFFF', size=9),
                        buttons=[
                            dict(count=5,  label='1S',  step='day',   stepmode='backward'),
                            dict(count=1,  label='1M',  step='month', stepmode='backward'),
@@ -708,8 +708,8 @@ with c_chart:
                            dict(count=1,  label='ACU', step='year',  stepmode='todate'),
                            dict(step='all', label='Todo'),
                        ])),
-        xaxis2=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#3D4A5C')),
-        xaxis3=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#3D4A5C')),
+        xaxis2=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#FFFFFF')),
+        xaxis3=dict(gridcolor=GRID, zeroline=False, tickfont=dict(size=8, color='#FFFFFF')),
         yaxis =dict(gridcolor=GRID, zeroline=False, tickformat=',.0f',
                     tickfont=dict(size=9, family='JetBrains Mono'), side='right',
                     tickcolor='#1E232D'),
@@ -849,12 +849,12 @@ with c_audit:
     all_audit_y = audit_gru + (audit_real_y if real_in_aud else [])
     fig_audit.update_layout(
         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='Inter', color='#3D4A5C', size=9),
+        font=dict(family='Inter', color='#FFFFFF', size=9),
         legend=dict(bgcolor='rgba(0,0,0,0)', borderwidth=0,
                     orientation='h', y=1.12, x=0,
-                    font=dict(size=9, color='#6B7A8F')),
+                    font=dict(size=9, color='#FFFFFF')),
         xaxis=dict(gridcolor='rgba(30,35,45,0.6)', zeroline=False,
-                   tickfont=dict(size=8, color='#3D4A5C')),
+                   tickfont=dict(size=8, color='#FFFFFF')),
         yaxis=dict(gridcolor='rgba(30,35,45,0.6)', zeroline=False,
                    tickformat=',.0f', side='right',
                    range=[min(all_audit_y)*0.990, max(all_audit_y)*1.010] if all_audit_y else None,
@@ -921,7 +921,7 @@ with c_audit:
         chg_c  = "#00FF88" if chg >= 0 else "#FF3366"
 
         if err is None:
-            e_cls, e_txt, bw, bc = "audit-mid", "pendiente", 0, "#3D4A5C"
+            e_cls, e_txt, bw, bc = "audit-mid", "pendiente", 0, "#FFFFFF"
         elif err < 1.0:
             e_cls, bc = "audit-good", "#00FF88"
             e_txt = f"{err:.2f}% ✓"; bw = int(err*25)
@@ -955,7 +955,7 @@ with c_audit:
            border:1px solid rgba(0,212,255,0.12);border-radius:8px;">
         <div style="font-size:0.55rem;color:#00D4FF;letter-spacing:2px;
              text-transform:uppercase;margin-bottom:4px;">Transparencia del modelo</div>
-        <div style="font-size:0.7rem;color:#6B7A8F;line-height:1.6;">
+        <div style="font-size:0.7rem;color:#FFFFFF;line-height:1.6;">
           El <b style="color:#C9D1D9;">GRU Ultra</b> analiza
           <b style="color:#C9D1D9;">120 días</b> de histórico con
           <b style="color:#C9D1D9;">17 features</b> técnicas (OHLCV, RSI, MACD, Bollinger, ATR).
@@ -1007,9 +1007,9 @@ with c_fc:
     gru_only = fc_line_y
     fig2.update_layout(
         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='JetBrains Mono', color='#3D4A5C', size=9),
+        font=dict(family='JetBrains Mono', color='#FFFFFF', size=9),
         showlegend=False, bargap=0.25,
-        xaxis=dict(gridcolor='rgba(30,35,45,0.6)', tickfont=dict(size=9, color='#3D4A5C')),
+        xaxis=dict(gridcolor='rgba(30,35,45,0.6)', tickfont=dict(size=9, color='#FFFFFF')),
         yaxis=dict(gridcolor='rgba(30,35,45,0.6)', tickformat=',.0f',
                    range=[min(gru_only)*0.992, max(gru_only)*1.008] if gru_only else None,
                    tickfont=dict(size=9, family='JetBrains Mono')),
@@ -1036,9 +1036,9 @@ with c_fc:
         real_s= f"{real:,.0f}" if real else "—"
         err_s = f"{err:.1f}%" if err else "—"
         err_c = "#00FF88" if err and err<1 else ("#FFB800" if err and err<2 else
-                ("#FF3366" if err else "#3D4A5C"))
+                ("#FF3366" if err else "#FFFFFF"))
         tbl += f'<div class="fc-row">'
-        tbl += f'<span style="color:#6B7A8F;">{d.strftime("%d/%m")}</span>'
+        tbl += f'<span style="color:#FFFFFF;">{d.strftime("%d/%m")}</span>'
         tbl += f'<span style="color:#C9D1D9;font-weight:600;">{pred:,.0f}</span>'
         tbl += f'<span style="color:#00D4FF;">{real_s}</span>'
         tbl += f'<span style="color:{err_c};">{err_s}</span>'
@@ -1100,10 +1100,10 @@ with st.container():
         fig_gauge.add_trace(go.Indicator(
             mode = "gauge+number",
             value = live_rsi,
-            title = {'text': "RSI (14) - Sobrecompra/Venta", 'font': {'size': 12, 'color': '#6B7A8F', 'family':'Inter'}},
+            title = {'text': "RSI (14) - Sobrecompra/Venta", 'font': {'size': 12, 'color': '#FFFFFF', 'family':'Inter'}},
             number = {'font': {'color': '#00FF88' if live_rsi<30 else ('#FF3366' if live_rsi>70 else '#00D4FF'), 'size':36}},
             gauge = {
-                'axis': {'range': [None, 100], 'tickcolor': "#3D4A5C"},
+                'axis': {'range': [None, 100], 'tickcolor': "#FFFFFF"},
                 'bar': {'color': '#00D4FF'},
                 'bgcolor': "rgba(0,0,0,0)",
                 'borderwidth': 1,
@@ -1122,11 +1122,11 @@ with st.container():
         fig_gauge.add_trace(go.Indicator(
             mode = "gauge+number+delta",
             value = live_macd_h,
-            title = {'text': "MACD Histograma (Fuerza)", 'font': {'size': 12, 'color': '#6B7A8F', 'family':'Inter'}},
+            title = {'text': "MACD Histograma (Fuerza)", 'font': {'size': 12, 'color': '#FFFFFF', 'family':'Inter'}},
             delta = {'reference': 0, 'increasing': {'color': '#00FF88'}, 'decreasing': {'color': '#FF3366'}},
             number = {'font': {'color': '#00FF88' if live_macd_h>=0 else '#FF3366', 'size':36}},
             gauge = {
-                'axis': {'range': [-max_macd, max_macd], 'tickcolor': "#3D4A5C"},
+                'axis': {'range': [-max_macd, max_macd], 'tickcolor': "#FFFFFF"},
                 'bar': {'color': '#00FF88' if live_macd_h >=0 else '#FF3366'},
                 'bgcolor': "rgba(0,0,0,0)",
                 'borderwidth': 1,
