@@ -273,6 +273,7 @@ class GRUUltra(nn.Module):
 def load_market_data():
     # Datos de entrenamiento: solo hasta el 31 de marzo (corte del modelo)
     raw = yf.download('^IBEX', start='1993-07-12', end='2026-04-01', progress=False)
+    if raw.empty: return pd.DataFrame()
     raw.dropna(inplace=True); raw.columns = raw.columns.get_level_values(0)
     df = raw[['Open','High','Low','Close','Volume']].copy()
     df['MA10']   = df['Close'].rolling(10).mean()
@@ -301,6 +302,7 @@ def load_market_data():
 def load_live_ohlcv():
     end = (datetime.now()+pd.Timedelta(days=1)).strftime('%Y-%m-%d')
     raw = yf.download('^IBEX', start='2024-01-01', end=end, progress=False)
+    if raw.empty: return pd.DataFrame()
     raw.dropna(inplace=True); raw.columns = raw.columns.get_level_values(0)
     return raw[['Open','High','Low','Close','Volume']].copy()
 
@@ -375,6 +377,11 @@ with st.spinner(""):
     df       = load_market_data()
     live_df  = load_live_ohlcv()
     april_df = load_april_data()
+
+    if df.empty or live_df.empty:
+        st.error("🚨 **Error Crítico: Servidor bloqueado por Yahoo Finance** 🚨\n\nEl servidor actual en Streamlit Cloud ha sido temporalmente limitado (rate limit) de forma automática por Yahoo Finance. Es muy común en servidores gratuitos compartidos.\n\n💡 **Solución:** Refresca la página (F5) en un rato.")
+        st.stop()
+
     model, scaler, snap_info = load_model_and_scalers()
 
 forecast_prices   = run_forecast(model, scaler, snap_info, df)
