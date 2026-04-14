@@ -13,7 +13,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime, date
 from pandas.tseries.offsets import BDay
-import yfinance as yf
 import torch, torch.nn as nn
 
 # ══════════════════════════════════════════════════════════════
@@ -272,9 +271,12 @@ class GRUUltra(nn.Module):
 @st.cache_data(show_spinner=False)
 def load_market_data():
     # Datos de entrenamiento: solo hasta el 31 de marzo (corte del modelo)
-    raw = yf.download('^IBEX', start='1993-07-12', end='2026-04-01', progress=False)
+    csv_path = os.path.join(os.path.dirname(__file__), 'ibex_data.csv')
+    if not os.path.exists(csv_path): return pd.DataFrame()
+    raw = pd.read_csv(csv_path, index_col='Date', parse_dates=True)
+    raw = raw[raw.index < '2026-04-01']
     if raw.empty: return pd.DataFrame()
-    raw.dropna(inplace=True); raw.columns = raw.columns.get_level_values(0)
+    raw.dropna(inplace=True)
     df = raw[['Open','High','Low','Close','Volume']].copy()
     df['MA10']   = df['Close'].rolling(10).mean()
     df['MA30']   = df['Close'].rolling(30).mean()
@@ -300,18 +302,22 @@ def load_market_data():
 
 @st.cache_data(show_spinner=False, ttl=300)
 def load_live_ohlcv():
-    end = (datetime.now()+pd.Timedelta(days=1)).strftime('%Y-%m-%d')
-    raw = yf.download('^IBEX', start='2024-01-01', end=end, progress=False)
+    csv_path = os.path.join(os.path.dirname(__file__), 'ibex_data.csv')
+    if not os.path.exists(csv_path): return pd.DataFrame()
+    raw = pd.read_csv(csv_path, index_col='Date', parse_dates=True)
+    raw = raw[raw.index >= '2024-01-01']
     if raw.empty: return pd.DataFrame()
-    raw.dropna(inplace=True); raw.columns = raw.columns.get_level_values(0)
+    raw.dropna(inplace=True)
     return raw[['Open','High','Low','Close','Volume']].copy()
 
 @st.cache_data(show_spinner=False, ttl=600)
 def load_april_data():
-    end = (datetime.now()+pd.Timedelta(days=1)).strftime('%Y-%m-%d')
-    raw = yf.download('^IBEX', start='2026-04-01', end=end, progress=False)
+    csv_path = os.path.join(os.path.dirname(__file__), 'ibex_data.csv')
+    if not os.path.exists(csv_path): return pd.DataFrame()
+    raw = pd.read_csv(csv_path, index_col='Date', parse_dates=True)
+    raw = raw[raw.index >= '2026-04-01']
     if raw.empty: return pd.DataFrame()
-    raw.dropna(inplace=True); raw.columns = raw.columns.get_level_values(0)
+    raw.dropna(inplace=True)
     return raw[['Open','High','Low','Close','Volume']].copy()
 
 @st.cache_resource(show_spinner=False)
@@ -379,7 +385,7 @@ with st.spinner(""):
     april_df = load_april_data()
 
     if df.empty or live_df.empty:
-        st.error("🚨 **Error Crítico: Servidor bloqueado por Yahoo Finance** 🚨\n\nEl servidor actual en Streamlit Cloud ha sido temporalmente limitado (rate limit) de forma automática por Yahoo Finance. Es muy común en servidores gratuitos compartidos.\n\n💡 **Solución:** Refresca la página (F5) en un rato.")
+        st.error("🚨 **Error Crítico: No se encuentran los datos locales** 🚨\n\nAsegúrate de haber ejecutado el script `download_data.py` de antemano para generar el archivo `ibex_data.csv` y tenerlo junto a `app.py`.")
         st.stop()
 
     model, scaler, snap_info = load_model_and_scalers()
