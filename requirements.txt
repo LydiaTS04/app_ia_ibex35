@@ -1,0 +1,11 @@
+yfinance
+tensorflow
+streamlit
+scikit-learn
+statsmodels
+matplotlib
+pandas
+numpy
+plotly
+huggingface-hub
+torch
